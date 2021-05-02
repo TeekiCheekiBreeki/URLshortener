@@ -1,23 +1,18 @@
 import requests
 
-#account info
-username ="o_sk88l8f0s"
-password = "Jebemtimater1!"
+#api key
+api_key = "cd30c7e21d07ede6c3303ff73d2c9fae4db92"
 
-#we get the access token (if you read bitly api documentation, you see that
-# we need access token in order to make api calls)
+# We read url we want to shorten
+url = input("Enter your URL here: ")
 
-#firstly we need to get authentication response, then if response is OK, we get the token
+api_url = f"https://cutt.ly/api/api.php?key={api_key}&short={url}"
 
-auth_response = requests.post("https://api-ssl.bitly.com/oauth/access_token", auth = (username, password))
-
-if auth_response.status_code == 200:
-    access_token = auth_response.content.decode()
-    print("[!] Got access token: ", access_token)
-
+# We make the request
+data = requests.get(api_url).json()["url"]
+if data["status"] == 7:
+    # IF everything is OK, we get shortened URL
+    shortened_url = data["shortLink"]
+    print("Shortened URL:", shortened_url)
 else:
-    print("[!] Cannot get access token, exiting..")
-    exit()
-
-# We used requests.post() to make a POST request to bitly endpoint and get our access token
-
+    print("[!] Error Shortening URL:", data)
